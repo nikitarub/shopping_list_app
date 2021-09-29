@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  app:
+    build: .
+    restart: always
+    networks:
+      frontend:
+        aliases:
+          - space_dyakov_shopping_www
+
+
+networks:
+  frontend:
+    name: web
+    external: true
