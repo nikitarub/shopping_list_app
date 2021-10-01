@@ -1,5 +1,6 @@
 FROM node:16
 WORKDIR /app/app
+ADD ./app/package.json ./app/yarn.lock /app/app/
+RUN yarn
 ADD . /app
-RUN npm install
 ENTRYPOINT [ "yarn", "start" ]
