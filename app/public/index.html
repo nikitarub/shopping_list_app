@@ -24,6 +24,23 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('%PUBLIC_URL%/serviceWorker.js').then(function(registration) {
+            // Registration was successful
+            console.log('Service worker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            // registration failed :(
+            console.log('Service worker registration failed: ', err);
+          }).catch(function(err) {
+            console.log(err)
+          });
+        });
+      } else {
+        console.log('Service worker is not supported');
+      }
+    </script>
     <title>React App</title>
   </head>
   <body>
