@@ -67,9 +67,11 @@ export default class CheckboxItem extends React.Component {
             let checkboxItem = document.getElementById('checkboxItem_'+id);
             let checkboxDeleteButton = document.getElementById('checkboxDeleteButton_'+id);
             let checkboxFavoriteButton = document.getElementById('checkboxFavoriteButton_'+id);
-
+            let checkboxInput = document.getElementById('checkboxInput_'+this.state.checkbox.id);
+            
             checkboxText.className = "checkbox-text";
             checkboxItem.className = "checkbox-item";
+            checkboxInput.checked = "";
             checkboxDeleteButton.hidden = ""
             checkboxFavoriteButton.hidden = ""
             clearTimeout(this.state.timerID);
@@ -97,6 +99,7 @@ export default class CheckboxItem extends React.Component {
         if (checkboxInput.checked && !this.state.checkboxDeleting){
             checkboxInput.className = "checkbox-input--checked";
             checkboxText.className = "checkbox-text--checked";
+            checkboxInput.checked = "True";
             const timerIDSlider = setTimeout(this.startItemSlider, 1000, this.state.checkbox.id);
             const timerID = setTimeout(this.dropCheckbox, 2000, this.state.checkbox.id);
             this.setState(state => ({...state, 
@@ -182,7 +185,7 @@ export default class CheckboxItem extends React.Component {
                         <div className={"checkbox-box"} id={'checkboxBox_'+this.state.checkbox.id}>
                             <div className={"checkbox-item"} id={'checkboxItem_'+this.state.checkbox.id} onClick={this.checkboxChanged}>
                                 <Checkbox props={checkboxProps}/> 
-                                <label  id={'checkboxText_'+this.state.checkbox.id}>{this.state.checkbox.name}</label>
+                                <label className={"checkbox-text"} id={'checkboxText_'+this.state.checkbox.id}>{this.state.checkbox.name}</label>
                             </div>
                             <Button props={favorite_button_data} onClick={this.favoriteButtonOnClick}/>
                             <Button props={delete_button_data} onClick={this.deleteButtonOnClick}/>

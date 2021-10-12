@@ -1,0 +1,7 @@
+.header-menu {
+    background-color: #5CA8EF;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    padding-bottom: 5px;
+}

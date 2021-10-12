@@ -1,29 +1,43 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
 import logo from './logo.svg';
 import './App.css';
 
-import EditableChecklist from './components/pages/editableChecklist'
+import CurrentList from './components/pages/currentList'
+import HistoryList from './components/pages/historyList'
 
 
-function App() {
+export default function App() {
   return (
-    <div>
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
-      <EditableChecklist/>
-    </div>
+    <Router>
+      <div>
+        <Switch>
+          <Route path="/history">
+            <HistoryList />
+          </Route>
+          <Route path="/">
+            <CurrentList />
+          </Route>
+        </Switch>
+
+
+        <div className={"bottom-nav"}>
+          <ul>
+            <li>
+              <Link to="/">Current List</Link>
+            </li>
+            <li>
+              <Link to="/history">History</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </Router>
   );
 }
-
-export default App;

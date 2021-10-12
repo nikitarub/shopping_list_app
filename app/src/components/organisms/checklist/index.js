@@ -12,7 +12,7 @@ export default class Checklist extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            checkboxes : [],
+            checkboxes : null,
         }
     }
 
@@ -27,12 +27,16 @@ export default class Checklist extends React.Component {
         if (this.state.checkboxes !== this.props.props){
             this.setState({checkboxes: this.props.props});
         }
+        // console.log(">????? UPD");
     }
     
     render() {        
         let checkboxes = this.state.checkboxes;
-        if (checkboxes == null) {
+        let loading_message = "Create new item"
+        
+        if (checkboxes === null) {
             checkboxes = []
+            loading_message = "Loading"
         }
         return (
             <>
@@ -44,7 +48,7 @@ export default class Checklist extends React.Component {
                         <CheckboxItem key={'checkbox_key_'+chbox.id} props={chbox}/>
                     )
                         :
-                    <p>Загрузка</p>
+                    <p>{loading_message}</p>
                     }
                 </div>            
             </>

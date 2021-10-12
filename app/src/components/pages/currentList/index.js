@@ -7,12 +7,13 @@ import style from './style.css'
 import Checklist from '../../organisms/checklist'
 import Button from '../../atoms/button'
 import Input from '../../atoms/input'
+import HeaderMenu from '../../molecules/headerMenu'
 
-export default class EditableChecklist extends React.Component {
+export default class CurrentList extends React.Component {
     constructor() {
         super();
         this.state = {
-            checkboxes: [],
+            checkboxes: null,
             inputText: ''
         }
     }
@@ -24,23 +25,23 @@ export default class EditableChecklist extends React.Component {
 
     setCheckboxes = () => {
         
-        this.setState(state => ({...state, checkboxes: [
-            {
-                "id":1,
-                "name": "hi"
-            },
-            {
-                "id":2,
-                "name": "potato"
-            },
-            {
-                "id":3,
-                "name": "4567890"
-            },
+        this.setState(state => ({...state, checkboxes: 
+        [
+            // {
+            //     "id":2,
+            //     "name": "potato"
+            // },
+            // {
+            //     "id":3,
+            //     "name": "apples"
+            // },
+            // {
+            //     "id":1,
+            //     "name": "milk"
+            // }
         ]
         }));
     }
-
 
     buttonOnClick = (e) => {
         console.log("EDIT BUTTON CLICKED");
@@ -58,6 +59,10 @@ export default class EditableChecklist extends React.Component {
         const input = document.getElementById('item-list-input');
         this.setState(state => ({...state, inputText:input.value}))
     }
+
+    checklistChange = (e) => {
+        // console.log("======= checklistChange: ", e);
+    }
     
     
     render() {
@@ -66,11 +71,15 @@ export default class EditableChecklist extends React.Component {
         }
         return (
             <>
-                <div className={"list"}>
-                    <h2 className={'list-title'}>Current list</h2>
-                    <Checklist props={this.state.checkboxes}/>
-                    <Input id={"item-list-input"} onChange={this.inputChange}/>
-                    <Button props={button_data} onClick={this.buttonOnClick}/>
+                <div>
+                    <HeaderMenu name={"Current List"}/>
+                    {/* <h2 className={'list-title'}>Current list</h2> */}
+                    <div className={"list"} onClick={this.checklistChange}>
+                        <Checklist props={this.state.checkboxes}/>
+                        <Input id={"item-list-input"} onChange={this.inputChange}/>
+                        <Button props={button_data} onClick={this.buttonOnClick}/>
+                    </div>
+                    
                 </div>            
             </>
         );

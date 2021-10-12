@@ -25,9 +25,14 @@
 
 .checkbox-text--checked{
     /* color: #000; */
+    margin-left: 10px;
     text-decoration: line-through;
     animation-name: checkout_checkbox_text;
     animation-duration: 1s;
+}
+
+.checkbox-text{
+    margin-left: 10px;
 }
 
 .checkbox-input--checked{
