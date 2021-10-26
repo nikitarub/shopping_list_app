@@ -13,11 +13,16 @@ export default class Checklist extends React.Component {
         super(props);
         this.state = {
             checkboxes : null,
+            hintMessage : "Create new item",
         }
     }
 
     componentDidMount = () => {
         console.log('Checklist mounted')
+        console.log("this.props.hintMessage: ", this.props.hintMessage);
+        if (this.props.hintMessage){
+            this.setState({hintMessage : this.props.hintMessage});
+        }
         this.setState({checkboxes: this.props.props});
     }
 
@@ -27,12 +32,15 @@ export default class Checklist extends React.Component {
         if (this.state.checkboxes !== this.props.props){
             this.setState({checkboxes: this.props.props});
         }
-        // console.log(">????? UPD");
+        if ((this.state.hintMessage !== this.props.hintMessage) && (this.props.hintMessage)){
+            this.setState({hintMessage : this.props.hintMessage});
+        }
+        console.log(">????? UPD");
     }
     
     render() {        
         let checkboxes = this.state.checkboxes;
-        let loading_message = "Create new item"
+        let loading_message = this.state.hintMessage
         
         if (checkboxes === null) {
             checkboxes = []

@@ -4,7 +4,9 @@
 
 .checkbox-box {
     display: flex;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-bottom: 1px solid #838383;
 }
 
 .checkbox-item {
@@ -20,6 +22,11 @@
 
 .checkbox-item--checked {
     animation-name: checkout_checkbox_item_slideout;
+    animation-duration: 4s;
+}
+
+.checkbox-item--checked-return {
+    animation-name: checkout_checkbox_item_slide_right;
     animation-duration: 4s;
 }
 
@@ -39,6 +46,12 @@
     animation-name: checkout_checkbox_input;
     animation-duration: 1s;
 }
+
+.checkbox-input--checked-return{
+    animation-name: checkout_checkbox_input;
+    animation-duration: 1s;
+}
+
 
 .checkbox-text{
     text-decoration: none;
@@ -78,32 +91,36 @@
 }
 
 
+@keyframes checkout_checkbox_item_slide_right {
+    from {
+        margin-left: 0;
+    }
+  
+    to {
+        margin-left: -200%;
+    }
+}
+
+
 .delete-button {
     margin-right: 5%;
+    border: none;
+    background-color: #fff;
 }
 
 .favorite-button {
     margin-right: 5%;
-    border: 1px solid rgb(233, 231, 177);
-    border-radius: 5px;
+    /* border: 1px solid rgb(233, 231, 177); */
+    border: none;
+    /* border-radius: 5px; */
     background-color: #fff;
 }
 
 .favorite-button-enabled {
     margin-right: 5%;
-    animation-name: favorite_button_enabled_animation;
     animation-duration: 0.5s;
-    background-color: #FF0;
-    border: 1px solid rgb(233, 231, 177);
-    border-radius: 5px;
-}
-
-@keyframes favorite_button_enabled_animation {
-    from {
-        background-color: #fff;
-    }
-  
-    to {
-        background-color: #FF0;
-    }
+    border: none;
+    background-color: #FFF;
+    /* border: 1px solid rgb(233, 231, 177); */
+    /* border-radius: 5px; */
 }

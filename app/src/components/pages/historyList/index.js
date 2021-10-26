@@ -30,29 +30,40 @@ export default class HistoryList extends React.Component {
         [
             {
                 "id":2,
-                "name": "potato"
+                "name": "potato",
+                "favorite": true,
+                "useReturnCheckbox": true,
+
+
             },
             {
                 "id":3,
-                "name": "apples"
+                "name": "apples",
+                "favorite": true,
+                "useReturnCheckbox": true,
             },
             {
                 "id":1,
-                "name": "milk"
+                "name": "milk",
+                "favorite": true,
+                "useReturnCheckbox": true,
             }
         ], 
             checkboxes_history: [
                 {
                     "id":4,
-                    "name": "water"
+                    "name": "water",
+                    "useReturnCheckbox": true,
                 },
                 {
                     "id":5,
-                    "name": "sushi"
+                    "name": "sushi",
+                    "useReturnCheckbox": true,
                 },
                 {
                     "id":6,
-                    "name": "bread"
+                    "name": "bread",
+                    "useReturnCheckbox": true,
                 }
             ]
         }));
@@ -93,7 +104,7 @@ export default class HistoryList extends React.Component {
                             <p>Favorite</p>
                             <hr/>
                             <div onClick={this.checklistChange}>
-                                <Checklist props={this.state.checkboxes_favorite}/>
+                                <Checklist useReturnCheckbox={true} props={this.state.checkboxes_favorite} hintMessage={'There are no bought items on your favorites list yet. '}/>
                             </div>
                         </div>
                         
@@ -102,7 +113,7 @@ export default class HistoryList extends React.Component {
                             <p>History</p>
                             <hr/>
                             <div onClick={this.checklistChange}>
-                                <Checklist props={this.state.checkboxes_history}/>
+                                <Checklist props={this.state.checkboxes_history} hintMessage={'There are no already purchased items'}/>
                             </div>
                         </div>
                     </div>

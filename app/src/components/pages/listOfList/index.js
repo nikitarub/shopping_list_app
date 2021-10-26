@@ -9,7 +9,7 @@ import Button from '../../atoms/button'
 import Input from '../../atoms/input'
 import HeaderMenu from '../../molecules/headerMenu'
 
-export default class CurrentList extends React.Component {
+export default class ListOfList extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -29,15 +29,18 @@ export default class CurrentList extends React.Component {
         [
             {
                 "id":2,
-                "name": "potato"
+                "name": "My list",
+                "noFavoriteButton" : true,
             },
             {
                 "id":3,
-                "name": "apples"
+                "name": "Family weekend shopping",
+                "noFavoriteButton" : true,
             },
             {
                 "id":1,
-                "name": "milk"
+                "name": "B-day list",
+                "noFavoriteButton" : true,
             }
         ]
         }));
@@ -72,7 +75,7 @@ export default class CurrentList extends React.Component {
         return (
             <>
                 <div>
-                    <HeaderMenu name={"Current List"}/>
+                    <HeaderMenu name={"My lists"}/>
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
                         <Checklist props={this.state.checkboxes} hintMessage={'Create new item'}/>

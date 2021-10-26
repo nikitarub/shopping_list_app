@@ -11,7 +11,8 @@ import './App.css';
 
 import CurrentList from './components/pages/currentList'
 import HistoryList from './components/pages/historyList'
-
+import ListOfList from './components/pages/listOfList'
+import Share from './components/pages/share'
 
 export default function App() {
   return (
@@ -20,6 +21,12 @@ export default function App() {
         <Switch>
           <Route path="/history">
             <HistoryList />
+          </Route>
+          <Route path="/lists">
+            <ListOfList />
+          </Route>
+          <Route path="/share">
+            <Share />
           </Route>
           <Route path="/">
             <CurrentList />
@@ -34,6 +41,9 @@ export default function App() {
             </li>
             <li>
               <Link to="/history">History</Link>
+            </li>
+            <li>
+              <Link to="/lists">Lists</Link>
             </li>
           </ul>
         </div>

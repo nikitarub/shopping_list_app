@@ -24,8 +24,8 @@ export default class ButtonMenu extends React.Component {
     render() {
         return (
             <>
-                <button id={this.state.id} className={"buttonMenu"} onClick={this.props.onClick}>
-                    <img src={ButtonMenuSVG} alt="ButtonMenuSVG" />
+                <button id={this.state.id} className={this.state.className} onClick={this.props.onClick}>
+                    <img id={this.state.id+'SVG'} src={this.props.svg} />
                 </button>
             </>
         );
