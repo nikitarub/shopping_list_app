@@ -1,0 +1,8 @@
+.button-floating {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-right: 20px;
+    margin-bottom: 100px;
+    filter: drop-shadow(2px 4px 4px #C4C4C4);
+}

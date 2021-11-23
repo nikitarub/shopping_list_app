@@ -1,0 +1,19 @@
+.list {
+    margin-left: 5%;
+    background-color: #fff;
+    min-height: 100vh;
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    font-size: calc(10px + 2vmin);
+    color: #000;
+}
+
+
+.button-floating-add-all {
+    position: fixed;
+    bottom: 0;
+    margin-left: 30%;
+    margin-bottom: 50px;
+    filter: drop-shadow(2px 4px 4px #C4C4C4);
+}

@@ -1,7 +1,7 @@
 import * as React from "react"
 // import classnames from 'classnames'
 
-import style from './style.css'
+import './style.css'
 
 
 import Checklist from '../../organisms/checklist'

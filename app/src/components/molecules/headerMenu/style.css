@@ -6,6 +6,12 @@
     padding-bottom: 5px;
 }
 
+.back-button {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 
 .menu-dropdown{
     position: fixed;

@@ -8,6 +8,8 @@ import Checklist from '../../organisms/checklist'
 import Button from '../../atoms/button'
 import Input from '../../atoms/input'
 import HeaderMenu from '../../molecules/headerMenu'
+import InputForm from '../../organisms/inputForm'
+
 
 export default class ListOfList extends React.Component {
     constructor() {
@@ -51,7 +53,8 @@ export default class ListOfList extends React.Component {
         let checkboxes = this.state.checkboxes;
         checkboxes.push({
             "id": Math.random(),
-            "name": this.state.inputText
+            "name": this.state.inputText,
+            "noFavoriteButton" : true,
         })
         this.setState(state => ({...state, checkboxes: checkboxes}));
         const input = document.getElementById('item-list-input');
@@ -66,6 +69,13 @@ export default class ListOfList extends React.Component {
     checklistChange = (e) => {
         // console.log("======= checklistChange: ", e);
     }
+
+    productInputed = (value) => {
+        console.log("productInputed: ", value);
+        this.setState(state => ({...state, inputText:value}))
+        setTimeout(this.buttonOnClick, 100, undefined);
+
+    }
     
     
     render() {
@@ -79,8 +89,7 @@ export default class ListOfList extends React.Component {
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
                         <Checklist props={this.state.checkboxes} hintMessage={'Create new item'}/>
-                        <Input id={"item-list-input"} onChange={this.inputChange}/>
-                        <Button props={button_data} onClick={this.buttonOnClick}/>
+                        <InputForm onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
                     </div>
                     
                 </div>            

@@ -1,20 +1,26 @@
 .bottom-nav {
     border: 4px solid #5CA8EF;
+    border-radius: 10px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     position: fixed;
     width: 50%;
+    height: 30px;
     left: 0;
     bottom: 0;
-    margin: 20%;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .bottom-nav-item-active {
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
     color: #fff;
     background-color: #5CA8EF;
 }
 
 .bottom-nav-item {
+    width: 100%;
+    font-size: 20px;
     text-align: center;
 }

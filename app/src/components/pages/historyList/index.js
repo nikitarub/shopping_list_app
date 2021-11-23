@@ -8,6 +8,8 @@ import Checklist from '../../organisms/checklist'
 import Button from '../../atoms/button'
 import Input from '../../atoms/input'
 import HeaderMenu from '../../molecules/headerMenu'
+import BottomNav from '../../atoms/bottomNav'
+
 
 export default class HistoryList extends React.Component {
     constructor() {
@@ -117,7 +119,8 @@ export default class HistoryList extends React.Component {
                             </div>
                         </div>
                     </div>
-                </div>            
+                </div>   
+                <BottomNav currentIsActive={false}></BottomNav>         
             </>
         );
     }

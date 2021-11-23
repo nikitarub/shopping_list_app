@@ -6,7 +6,7 @@ import './style.css'
 import CheckboxSVG from '../../atoms/checkbox/checkbox.svg'
 import CheckboxClickedBasicSVG from '../../atoms/checkbox/checkboxClicked.svg'
 import CheckboxClickedReturnSVG from '../../atoms/checkbox/checkboxClickedReturn.svg'
-
+import CheckboxYellowClickedSVG from '../../atoms/checkbox/checkboxYellowClicked.svg'
 
 import Checkbox from '../../atoms/checkbox'
 import Button from '../../atoms/button'
@@ -14,6 +14,7 @@ import ButtonSVG from '../../atoms/buttonSVG'
 import ButtonFavoriteSVG from '../../atoms/buttonSVG/buttonFavorite.svg'
 import ButtonFavoriteEnabledSVG from '../../atoms/buttonSVG/buttonFavoriteEnabled.svg'
 import ButtonDeleteSVG from '../../atoms/buttonSVG/buttonDelete.svg'
+
 
 
 export default class CheckboxItem extends React.Component {
@@ -27,7 +28,9 @@ export default class CheckboxItem extends React.Component {
             checkboxDeleting: false,
             checkboxFavorite: false,
             useReturnCheckbox: false,
-            noFavoriteButton: false
+            noFavoriteButton: false,
+            isFavorite: false,
+            click_count: 0,
         }
 
     }
@@ -48,6 +51,13 @@ export default class CheckboxItem extends React.Component {
         if (this.props.props.noFavoriteButton != undefined){
             if (this.state.noFavoriteButton !== this.props.props.noFavoriteButton){
                 this.setState({noFavoriteButton: this.props.props.noFavoriteButton})
+            }
+        }
+
+        if (this.props.isFavorite != undefined){
+            console.log('Checkbox is fav')
+            if (this.state.isFavorite !== this.props.isFavorite){
+                this.setState({isFavorite: this.props.isFavorite})
             }
         }
         
@@ -98,6 +108,10 @@ export default class CheckboxItem extends React.Component {
             clearTimeout(this.state.timerID);
             clearTimeout(this.state.timerIDSlider);
         }
+    }
+
+    startOpenListTimer = () => {
+        window.open('/', '_self');
     }
 
     startItemSlider = (id) => {
@@ -152,7 +166,12 @@ export default class CheckboxItem extends React.Component {
             if (checkboxInput.checked === false && !this.state.checkboxDeleting){
                 checkboxInput.checked = true;
 
-                if (this.state.useReturnCheckbox){
+                if (this.state.isFavorite){
+                    console.log("Checkbox is fav_2")
+                    document.getElementById('add_all_button').hidden = "";
+                    this.svgSwitch(CheckboxYellowClickedSVG, 'CheckboxSVG_checkboxInput_'+this.state.checkbox.id); 
+                }
+                else if (this.state.useReturnCheckbox){
                     this.svgSwitch(CheckboxClickedReturnSVG, 'CheckboxSVG_checkboxInput_'+this.state.checkbox.id);
                 } else {
                     this.svgSwitch(CheckboxClickedBasicSVG, 'CheckboxSVG_checkboxInput_'+this.state.checkbox.id);                
@@ -161,6 +180,11 @@ export default class CheckboxItem extends React.Component {
                 checkboxInput.checked = false;
                 this.svgSwitch(CheckboxSVG, 'CheckboxSVG_checkboxInput_'+this.state.checkbox.id);
                 this.stopItemAnimation(this.state.checkbox.id);
+                this.setState({click_count: this.state.click_count - 1});
+                console.log("Checkbox cnt 1: ", this.state.click_count);
+                if ((this.state.click_count == 0) && this.state.isFavorite){
+                    document.getElementById('add_button').hidden = "";
+                }                    
             }
             
         }
@@ -168,18 +192,38 @@ export default class CheckboxItem extends React.Component {
             if (this.state.useReturnCheckbox){
                 checkboxInput.className = "checkbox-input--checked-return";
                 checkboxText.className = "checkbox-input--checked-return";
+            }
+            else if (this.state.isFavorite){
+                checkboxInput.className = "checkbox-input--checked";
+                this.setState({click_count: this.state.click_count + 1})
+                console.log("Checkbox cnt 0: ", this.state.click_count);
+                document.getElementById('add_button').hidden = "True";
+            }
+            else if (this.state.noFavoriteButton){
+                checkboxInput.className = "checkbox-input--checked";
             } else {
                 checkboxInput.className = "checkbox-input--checked";
                 checkboxText.className = "checkbox-text--checked";
             }
             checkboxInput.checked = "True";
-            const timerIDSlider = setTimeout(this.startItemSlider, 1000, this.state.checkbox.id);
-            const timerID = setTimeout(this.dropCheckbox, 2000, this.state.checkbox.id);
-            this.setState(state => ({...state, 
-                timerID: timerID, 
-                timerIDSlider: timerIDSlider,
-                checkboxChecked: true,
-            }));
+            if (this.state.isFavorite){
+                console.log("Doing nothing");
+            }
+            else if (this.state.noFavoriteButton){
+                const timerID = setTimeout(this.startOpenListTimer, 1000, this.state.checkbox.id);
+                this.setState(state => ({...state, 
+                    timerID: timerID, 
+                    checkboxChecked: true,
+                }));
+            } else {
+                const timerIDSlider = setTimeout(this.startItemSlider, 1000, this.state.checkbox.id);
+                const timerID = setTimeout(this.dropCheckbox, 2000, this.state.checkbox.id);
+                this.setState(state => ({...state, 
+                    timerID: timerID, 
+                    timerIDSlider: timerIDSlider,
+                    checkboxChecked: true,
+                }));
+            }
         } else {
             this.stopItemAnimation(this.state.checkbox.id);
         }
@@ -191,23 +235,31 @@ export default class CheckboxItem extends React.Component {
 
 
     deleteButtonOnClick = (e) => {
-        console.log("Delete button clicked");
-        let checkboxText = document.getElementById('checkboxText_'+this.state.checkbox.id);
-        let checkboxInput = document.getElementById('checkboxInput_'+this.state.checkbox.id);
-
-        if (!this.state.checkboxDeleting){
-            console.log("DELETING ");
-            checkboxInput.className = "checkbox-input--checked";
-            checkboxText.className = "checkbox-text--checked";
-            const timerIDSlider = setTimeout(this.startItemSlider, 1000, this.state.checkbox.id);
-            const timerID = setTimeout(this.dropCheckbox, 2000, this.state.checkbox.id);
-            this.setState(state => ({...state, 
-                timerID: timerID, 
-                timerIDSlider: timerIDSlider,
-                checkboxDeleting: true,
-            }));
+        let confirmation = false;
+        if (this.state.noFavoriteButton){
+            confirmation = window.confirm("Are use sure to delete " + this.state.checkbox.name + " list?")
         } else {
-            this.stopItemAnimation(this.state.checkbox.id);
+            confirmation = true
+        }
+        console.log("Delete button clicked");
+        if (confirmation == true){
+            let checkboxText = document.getElementById('checkboxText_'+this.state.checkbox.id);
+            let checkboxInput = document.getElementById('checkboxInput_'+this.state.checkbox.id);
+
+            if (!this.state.checkboxDeleting){
+                console.log("DELETING ");
+                checkboxInput.className = "checkbox-input--checked";
+                checkboxText.className = "checkbox-text--checked";
+                const timerIDSlider = setTimeout(this.startItemSlider, 1000, this.state.checkbox.id);
+                const timerID = setTimeout(this.dropCheckbox, 2000, this.state.checkbox.id);
+                this.setState(state => ({...state, 
+                    timerID: timerID, 
+                    timerIDSlider: timerIDSlider,
+                    checkboxDeleting: true,
+                }));
+            } else {
+                this.stopItemAnimation(this.state.checkbox.id);
+            }
         }
     }
 
@@ -238,7 +290,8 @@ export default class CheckboxItem extends React.Component {
             checkboxID = this.state.checkbox.id;
         }
         const checkboxProps = {
-            "id": 'checkboxInput_'+checkboxID
+            "id": 'checkboxInput_'+checkboxID,
+            "isFavorite": this.props.isFavorite,
         }
         const delete_button_data = {
             id: 'checkboxDeleteButton_'+checkboxID,
@@ -266,7 +319,7 @@ export default class CheckboxItem extends React.Component {
                         // <div className={"checkbox-item"} id={'checkboxItem_'+this.state.checkbox.id} onClick={this.checkboxChanged}>
                         <div className={"checkbox-box"} id={'checkboxBox_'+this.state.checkbox.id}>
                             <div className={"checkbox-item"} id={'checkboxItem_'+this.state.checkbox.id} onClick={this.checkboxChanged}>
-                                <Checkbox props={checkboxProps}/> 
+                                <Checkbox isFavorite={this.props.isFavorite} props={checkboxProps}/> 
                                 <label className={"checkbox-text"} id={'checkboxText_'+this.state.checkbox.id}>{this.state.checkbox.name}</label>
                             </div>
                             

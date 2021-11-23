@@ -4,9 +4,19 @@
     padding-left: 5px;
     padding-right: 5px;
     color: #000;
-    border-bottom: 2px solid #5a5a5a;
 }
 
+
+.menu-item { 
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5px;
+    margin-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #000;
+    border-bottom: 2px solid #5a5a5a;
+}
 
 .dropdown-menu-block{
     background-color: #fff;

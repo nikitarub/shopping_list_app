@@ -11,7 +11,12 @@ import BottomNav from '../../atoms/bottomNav'
 
 import InputForm from '../../organisms/inputForm'
 
-export default class CurrentList extends React.Component {
+import ButtonSVG from '../../atoms/buttonSVG'
+import ButtonFloatingYellowAddSVG from '../../atoms/buttonSVG/buttonFloatingYellowAdd.svg'
+
+
+
+export default class FavoriteList extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -31,15 +36,19 @@ export default class CurrentList extends React.Component {
         [
             {
                 "id":2,
-                "name": "potato"
+                "name": "potato",
+                "favorite": true
+                
             },
             {
                 "id":3,
-                "name": "apples"
+                "name": "apples",
+                "favorite": true
             },
             {
                 "id":1,
-                "name": "milk"
+                "name": "milk",
+                "favorite": true
             }
         ]
         }));
@@ -69,9 +78,16 @@ export default class CurrentList extends React.Component {
 
     }
 
+    addFavoritesToList = () => {
+        console.log("lol");
+        window.location.href = "/"
+    }
+
     checklistChange = (e) => {
         // console.log("======= checklistChange: ", e);
     }
+
+    
     
     
     render() {
@@ -81,13 +97,16 @@ export default class CurrentList extends React.Component {
         return (
             <>
                 <div>
-                    <HeaderMenu name={"Current List"} isHome={'true'}/>
+                    <HeaderMenu name={"My favorites"}/>
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
-                        <Checklist props={this.state.checkboxes} hintMessage={'Create new item'}/>
-                        <InputForm onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
+                        <Checklist isFavorite={'true'}  props={this.state.checkboxes} hintMessage={'Create new item'}/>
+                        <InputForm orange={'true'} onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
                     </div>
-                    <BottomNav currentIsActive={true}></BottomNav>
+                    
+                    <div className={"button-floating-add-all"} id={'add_all_button'} hidden={"True"}>
+                        <ButtonSVG props={button_data} svg={ButtonFloatingYellowAddSVG} onClick={this.addFavoritesToList}/>
+                    </div>
                 </div>            
             </>
         );

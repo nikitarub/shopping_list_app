@@ -1,6 +1,6 @@
 import * as React from "react"
 
-// import './style.css'
+import './style.css'
 
 export default class Input extends React.Component {
     constructor(props) {
@@ -17,7 +17,7 @@ export default class Input extends React.Component {
     render() {
         return (
             <>
-                <input id={this.props.id} onChange={this.props.onChange}></input>
+                <input id={this.props.id} className={"input"} onChange={this.props.onChange}></input>
             </>
         );
     }
