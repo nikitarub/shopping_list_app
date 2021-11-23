@@ -1,6 +1,6 @@
 FROM node:16
 WORKDIR /app/app
-ADD ./app/package.json ./app/yarn.lock /app/app/
-RUN yarn
+ADD ./app/package.json /app/app/
+RUN npm install
 ADD . /app
-ENTRYPOINT [ "yarn", "start" ]
+ENTRYPOINT [ "npm", "start" ]
