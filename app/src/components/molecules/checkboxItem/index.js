@@ -14,6 +14,7 @@ import ButtonSVG from '../../atoms/buttonSVG'
 import ButtonFavoriteSVG from '../../atoms/buttonSVG/buttonFavorite.svg'
 import ButtonFavoriteEnabledSVG from '../../atoms/buttonSVG/buttonFavoriteEnabled.svg'
 import ButtonDeleteSVG from '../../atoms/buttonSVG/buttonDelete.svg'
+import ButtonFloatingYellowAddSVG from '../../atoms/buttonSVG/buttonFloatingYellowAdd.svg'
 
 import fetchModule from '../../../tools/fetch';
 
@@ -115,6 +116,9 @@ export default class CheckboxItem extends React.Component {
             // if not checkboxDeleting => patch check 
             if (this.state.checkboxDeleting){
                 this.deleteItem(id);
+            } else if (this.state.isFavorite){
+                // if item is only favorite –> delete from favorites
+                this.deleteFavoriteItem(id);
             } else {
                 this.checkItem(id);
             }
@@ -182,6 +186,7 @@ export default class CheckboxItem extends React.Component {
 
                 if (this.state.isFavorite){
                     console.log("Checkbox is fav_2")
+                    this.props.favouriteChoose(this.state.checkbox, 1);
                     document.getElementById('add_all_button').hidden = "";
                     this.svgSwitch(CheckboxYellowClickedSVG, 'CheckboxSVG_checkboxInput_'+this.state.checkbox.id); 
                 }
@@ -196,9 +201,12 @@ export default class CheckboxItem extends React.Component {
                 this.stopItemAnimation(this.state.checkbox.id);
                 this.setState({click_count: this.state.click_count - 1});
                 console.log("Checkbox cnt 1: ", this.state.click_count);
-                if ((this.state.click_count == 0) && this.state.isFavorite){
-                    document.getElementById('add_button').hidden = "";
-                }                    
+                if (this.state.isFavorite){
+                    this.props.favouriteChoose(this.state.checkbox, -1);
+                }
+                // if ((this.state.click_count == 0) && this.state.isFavorite){
+                //     document.getElementById('add_all_button').hidden = "True";
+                // }                    
             }
             
         }
@@ -277,7 +285,7 @@ export default class CheckboxItem extends React.Component {
         }
     }
 
-    favoriteButtonOnClick = (e) => {
+    favoriteButtonOnClick = async (e) => {
         console.log("Favorite button clicked");
         console.log(this.state.checkboxFavorite);
         console.log(this.state.checkbox)
@@ -286,7 +294,17 @@ export default class CheckboxItem extends React.Component {
         if (this.state.checkboxFavorite){
             console.log("disabling fav");
             // fav delete request
-            this.unfaveItem(this.state.checkbox.id);
+            // if isFavorite -> delete
+            // else -> unfaveItem
+            console.log("isFav_2: ", this.state.isFavorite);
+            if (this.state.isFavorite){
+                let res = await this.deleteFavoriteItem(this.state.checkbox.id);
+                if (Object.keys(res).length === 0){return}
+            } else {
+                let res = await this.unfaveItem(this.state.checkbox.id);
+                if (Object.keys(res).length === 0){return}
+            }
+            
             favoriteButton.className = "favorite-button";
             favoriteButton.svg = ButtonFavoriteSVG;
             this.svgSwitch(ButtonFavoriteSVG, 'checkboxFavoriteButton_'+this.state.checkbox.id+'SVG');
@@ -299,7 +317,9 @@ export default class CheckboxItem extends React.Component {
             console.log("after disable: ", this.state.checkboxFavorite);
         } else {
             // fav post request
-            this.faveItem(this.state.checkbox.id);
+            let res = await this.faveItem(this.state.checkbox.id);
+            if (Object.keys(res).length === 0){return}
+
             favoriteButton.className = "favorite-button-enabled";
             favoriteButton.svg = ButtonFavoriteEnabledSVG;
             this.svgSwitch(ButtonFavoriteEnabledSVG, 'checkboxFavoriteButton_'+this.state.checkbox.id+'SVG');
@@ -310,6 +330,18 @@ export default class CheckboxItem extends React.Component {
                 checkbox: checkbox,
             }));
         }
+    }
+
+    redirect_to_main = () => {
+        window.open('/', '_self');
+    }
+
+    addFavoritesToList = () => {
+        this.props.favouriteChoose({}, 0);
+        const timerID = setTimeout(this.redirect_to_main, 1000);
+        this.setState(state => ({...state, 
+            timerID: timerID
+        }));
     }
 
 
@@ -327,14 +359,18 @@ export default class CheckboxItem extends React.Component {
                 console.log("list: ", json);
                 return json;
             } else {
-                throw response.status; 
+                alert("Failed to favourite item, please try again later.")
+                console.error(response.status);
+                return {} 
             }
         } catch (error) {
-            throw error;
+            alert("Failed to favourite item, please try again later.")
+            console.error(error);
+            return {} 
         }
     }
 
-    unfaveItem = async (fave_id) => {
+    unfaveItem = async (item_id) => {
         const current_list_id = getCookie("current_list_id");
         const user_id = getCookie("userID");
         
@@ -342,16 +378,46 @@ export default class CheckboxItem extends React.Component {
         // fetch
         try {
             console.log("getting list items ");
-            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/favorites/'+fave_id+'/fave'});
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id+'/fave'});
             if ((response.status >= 200) && (response.status < 400)) {
                 let json = await response.json();
                 console.log("list: ", json);
                 return json;
             } else {
-                throw response.status; 
+                alert("Failed to unfavourite item, please try again later.")
+                console.error(response.status);
+                return {} 
             }
         } catch (error) {
-            throw error;
+            alert("Failed to unfavourite item, please try again later.")
+            console.error(error);
+            return {} 
+        }
+    }
+
+    deleteFavoriteItem = async (fave_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        // b7e4ce46-8cbf-439f-853c-75f569d9e9f6/favourites/1bc02684-9202-4fb8-8078-ce42df2edd99
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/favourites/'+fave_id});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                alert("Failed to unfavourite item, please try again later.")
+                console.error(response.status);
+                return {} 
+            }
+        } catch (error) {
+            alert("Failed to unfavourite item, please try again later.")
+            console.error(error);
+            return {}
         }
     }
 
@@ -426,7 +492,9 @@ export default class CheckboxItem extends React.Component {
         if (this.state.checkboxFavorite == true){
             defaultFavoriteButton = ButtonFavoriteEnabledSVG;
         }
-        
+        const button_data = {
+            name: "Add"
+        }
         return (
             <>
                 <div>
@@ -441,12 +509,22 @@ export default class CheckboxItem extends React.Component {
                             </div>
                             
                             <ButtonSVG props={favorite_button_data} svg={defaultFavoriteButton} onClick={this.favoriteButtonOnClick}/>
-                            <ButtonSVG props={delete_button_data} svg={ButtonDeleteSVG} onClick={this.deleteButtonOnClick}/>
+                            {
+                                this.state.isFavorite
+                                ?
+                                <></>
+                                :
+                                <ButtonSVG props={delete_button_data} svg={ButtonDeleteSVG} onClick={this.deleteButtonOnClick}/>
+                            }
+                            
                         </div>
                             :
                         <p>{'Загрузка'}</p>
                     }
-                </div>            
+                </div>  
+                <div className={"button-floating-add-all"} id={'add_all_button'} hidden={"True"}>
+                    <ButtonSVG props={button_data} svg={ButtonFloatingYellowAddSVG} onClick={this.addFavoritesToList}/>
+                </div>          
             </>
         );
     }

@@ -124,3 +124,13 @@
     /* border: 1px solid rgb(233, 231, 177); */
     /* border-radius: 5px; */
 }
+
+
+
+.button-floating-add-all {
+    position: fixed;
+    bottom: 0;
+    margin-left: 30%;
+    margin-bottom: 100px;
+    filter: drop-shadow(2px 4px 4px #C4C4C4);
+}

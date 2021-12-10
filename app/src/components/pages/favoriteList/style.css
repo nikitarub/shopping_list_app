@@ -9,11 +9,3 @@
     color: #000;
 }
 
-
-.button-floating-add-all {
-    position: fixed;
-    bottom: 0;
-    margin-left: 30%;
-    margin-bottom: 50px;
-    filter: drop-shadow(2px 4px 4px #C4C4C4);
-}

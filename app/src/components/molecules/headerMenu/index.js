@@ -15,6 +15,8 @@ import buttonBoughtAllSmallSVG from '../../atoms/buttonSVG/buttonBoughtAllSmall.
 import buttonBackSVG from '../../atoms/buttonSVG/buttonBack.svg'
 import buttonListOfListSVG from '../../atoms/buttonSVG/buttonListOfList.svg'
 
+import {getCookie, setCookie, checkAuth} from '../../../tools/auth'
+
 
 
 
@@ -26,12 +28,15 @@ export default class HeaderMenu extends React.Component {
             name: null,
             has_history: false,
             isHome: this.props.isHome,
-            isStart: this.props.isStart
+            isStart: this.props.isStart,
+            menu: []
         }
 
     }
 
     componentDidMount = () => {
+        checkAuth();
+        this.menuSwitch();
         this.setState({name: this.props.name})
         console.log("isHome: ", this.state.isHome);
         console.log("window.history.length: ", window.history.length);
@@ -100,43 +105,69 @@ export default class HeaderMenu extends React.Component {
             menu.hidden = ''
         }
     }
+
+
+    menuSwitch = () => {
+        let menu = []
+
+        if (window.location.pathname == "/"){
+            menu = [
+                {
+                    name: 'I bought all',
+                    color: '#5CA8EF',
+                    button: buttonBoughtAllSmallSVG,
+                    onClick: this.props.boughtAll
+                },
+                {
+                    name: 'My favorites',
+                    color: '#FFC107',
+                    button: buttonFavoriteSVG,
+                    onClick: this.navigateToFavorites
+                },
+                {
+                    name: 'Clear all',
+                    color: '#FB0A0A',
+                    button: buttonDeleteRedSVG,
+                    onClick: this.props.clearAll
+                },
+                {
+                    name: 'Share the list',
+                    color: 'black',
+                    button: buttonShareSmallSVG,
+                    onClick: this.navigateToShare
+                }
+            ]
+        } else if (window.location.pathname == "/history"){
+            menu = [
+                {
+                    name: 'My favorites',
+                    color: '#FFC107',
+                    button: buttonFavoriteSVG,
+                    onClick: this.navigateToFavorites
+                }
+            ]
+        } else if (window.location.pathname == "/favorites"){
+            menu = [
+                {
+                    name: 'Clear all',
+                    color: '#FB0A0A',
+                    button: buttonDeleteRedSVG,
+                    onClick: this.props.clearAll
+                },
+            ]
+        }
+        
+        
+
+        this.setState({ menu: menu})
+    }
     
     render() {
         const submenu_button_data = {
             name: 'Sub Menu'
         }
 
-        let menu =[
-            {
-                name: 'I bought all',
-                color: '#5CA8EF',
-                button: buttonBoughtAllSmallSVG,
-                onClick: this.navigateToShare
-            },
-            {
-                name: 'My favorites',
-                color: '#FFC107',
-                button: buttonFavoriteSVG,
-                onClick: this.navigateToFavorites
-            },
-            {
-                name: 'Clear all',
-                color: '#FB0A0A',
-                button: buttonDeleteRedSVG,
-                onClick: this.navigateToShare
-            },
-            {
-                name: 'Share the list',
-                color: 'black',
-                button: buttonShareSmallSVG,
-                onClick: this.navigateToShare
-            },
-            {
-                name: 'Log in',
-                color: 'black',
-                onClick: this.navigateToLogin
-            }
-        ]
+        
 
         return (
             <>
@@ -146,7 +177,7 @@ export default class HeaderMenu extends React.Component {
                             ? 
                         <div>
                             <div className={'menu-dropdown'} id={'menu-dropdown'} hidden={'True'}>
-                                <DropdownMenu name={'Menu dropdown'} menuList={menu}/>
+                                <DropdownMenu name={'Menu dropdown'} menuList={this.state.menu}/>
                             </div>
                             <div className={"header-menu"}>
                                 {

@@ -53,7 +53,7 @@ export default class Checklist extends React.Component {
                     checkboxes.length !== 0
                         ? 
                     checkboxes.map((chbox) =>  
-                        <CheckboxItem isFavorite={this.props.isFavorite} key={'checkbox_key_'+chbox.id} props={chbox}/>
+                        <CheckboxItem favouriteChoose={this.props.favouriteChoose} isFavorite={this.props.isFavorite} key={'checkbox_key_'+chbox.id} props={chbox}/>
                     )
                         :
                     <p>{loading_message}</p>

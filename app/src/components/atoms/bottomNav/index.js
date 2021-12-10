@@ -32,11 +32,11 @@ export default class BottomNav extends React.Component {
             historyClassName = "bottom-nav-item-active";
         }
         return (
-            <div className={"bottom-nav"}>
-                <div className={curentClassName} onClick={this.navigateToCurrentList}>
+            <div className={"bottom-nav"} id={"bottom-nav-bar"}>
+                <div id={curentClassName} className={curentClassName} onClick={this.navigateToCurrentList}>
                     Current List
                 </div>
-                <div className={historyClassName} onClick={this.navigateToHistory}>
+                <div id={historyClassName} className={historyClassName} onClick={this.navigateToHistory}>
                     History
                 </div>
             </div>

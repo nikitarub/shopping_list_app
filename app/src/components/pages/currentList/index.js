@@ -85,15 +85,18 @@ export default class CurrentList extends React.Component {
         if (Object.keys(list_data).length !== 0){
             this.state.listName = list_data['name']
             list_data['items'].forEach(element => {
-                let checkbox = {
-                    'item_id': element.item_id,
-                    'id': element.item_id,
-                    'name': element.name,
+                if (element['check'] !== true) {
+                    let checkbox = {
+                        'item_id': element.item_id,
+                        'id': element.item_id,
+                        'name': element.name,
+                    }
+                    if (element.fave_id != null){
+                        checkbox['favorite'] = true
+                    }
+                    checkboxes.push(checkbox);
                 }
-                if (element.fave_id != null){
-                    checkbox['favorite'] = true
-                }
-                checkboxes.push(checkbox);
+                
             });
         }
 
@@ -133,6 +136,65 @@ export default class CurrentList extends React.Component {
     checklistChange = (e) => {
         // console.log("======= checklistChange: ", e);
     }
+
+    boughtAll = async () => {
+        // just derni ruch'ky 
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doPost({path: '/users/'+user_id+'/lists/'+current_list_id+'/checkall'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                
+            } else {
+                console.error(response.status); 
+            }
+        } catch (error) {
+            console.error(error);
+            
+        }
+        this.setCheckboxes();
+    }
+
+    deleteItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                
+            } else {
+                console.error(response.status); 
+            }
+        } catch (error) {
+            console.error(error);
+            
+        }
+        this.setCheckboxes();
+    }
+
+    clearAll = async () => {
+        // get all first, them drop'em all
+        this.setCheckboxes();
+
+        this.state.checkboxes.forEach(checkbox => {
+            this.deleteItem(checkbox.id);
+        })
+
+        this.setCheckboxes();
+    }
+
     
     
     render() {
@@ -142,7 +204,7 @@ export default class CurrentList extends React.Component {
         return (
             <>
                 <div>
-                    <HeaderMenu name={this.state.listName} isHome={'true'}/>
+                    <HeaderMenu boughtAll={this.boughtAll} clearAll={this.clearAll} name={this.state.listName} isHome={'true'}/>
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
                         <Checklist props={this.state.checkboxes} hintMessage={'Create new item'}/>

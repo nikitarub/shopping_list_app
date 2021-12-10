@@ -19,13 +19,38 @@ export default class HistoryList extends React.Component {
         this.state = {
             checkboxes_favorite: null,
             checkboxes_history: null,
-            inputText: ''
+            inputText: '',
+            favourite_choices: [],
         }
     }
 
     componentDidMount = () => {
         console.log('EditableChecklist mounted')
         this.setCheckboxes()
+    }
+
+    postNewItem = async (name) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const item_data = {
+                'name': name
+            }
+            const response = await fetchModule.doPost({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/', body:item_data});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     getFavoriteData = async () => {
@@ -185,6 +210,33 @@ export default class HistoryList extends React.Component {
     checklistChange = (e) => {
         // console.log("======= checklistChange: ", e);
     }
+
+    favouriteChoose = async (value, flag) => {
+        let fav_choose = this.state.favourite_choices;
+        if (flag === 1) {
+            fav_choose.push(value);
+        } else if (flag === -1) {
+            let tmp = [];
+            fav_choose.forEach(element => { 
+                if (element.id !== value.id){
+                    tmp.push(element);
+                }
+            });
+            fav_choose = tmp;
+            
+        } else if (flag === 0){
+            // add items
+            fav_choose.forEach(element => {
+                this.postNewItem(element.name);
+            });
+            
+        }
+        if (fav_choose.length === 0){
+            document.getElementById("add_all_button").hidden = "True";            
+        }
+        console.log("fav_choose: ", fav_choose);
+        this.setState(state => ({...state, favourite_choices: fav_choose}))
+    }
     
     
     render() {
@@ -200,7 +252,7 @@ export default class HistoryList extends React.Component {
                             <p>Favorite</p>
                             <hr/>
                             <div onClick={this.checklistChange}>
-                                <Checklist useReturnCheckbox={true} props={this.state.checkboxes_favorite} hintMessage={'There are no bought items on your favorites list yet. '}/>
+                                <Checklist favouriteChoose={this.favouriteChoose} isFavorite={'true'} useReturnCheckbox={true} props={this.state.checkboxes_favorite} hintMessage={'There are no bought items on your favorites list yet. '}/>
                             </div>
                         </div>
                         
