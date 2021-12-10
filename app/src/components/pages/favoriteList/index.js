@@ -14,6 +14,8 @@ import InputForm from '../../organisms/inputForm'
 import ButtonSVG from '../../atoms/buttonSVG'
 import ButtonFloatingYellowAddSVG from '../../atoms/buttonSVG/buttonFloatingYellowAdd.svg'
 
+import {getCookie, setCookie, checkAuth} from '../../../tools/auth'
+import fetchModule from '../../../tools/fetch';
 
 
 export default class FavoriteList extends React.Component {
@@ -30,27 +32,50 @@ export default class FavoriteList extends React.Component {
         this.setCheckboxes()
     }
 
-    setCheckboxes = () => {
+    getListData = async () => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
         
-        this.setState(state => ({...state, checkboxes: 
-        [
-            {
-                "id":2,
-                "name": "potato",
-                "favorite": true
-                
-            },
-            {
-                "id":3,
-                "name": "apples",
-                "favorite": true
-            },
-            {
-                "id":1,
-                "name": "milk",
-                "favorite": true
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ")
+            const response = await fetchModule.doGet({path: '/users/'+user_id+'/favourites'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
             }
-        ]
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    setCheckboxes = async () => {
+        // get items from list here
+
+        let list_data = await this.getListData();
+
+        let checkboxes = [];
+
+        if (Object.keys(list_data).length !== 0){
+            list_data['items'].forEach(element => {
+                let checkbox = {
+                    'item_id': element.fave_id,
+                    'id': element.fave_id,
+                    'name': element.name,
+                }
+                if (element.fave_id != null){
+                    checkbox['favorite'] = true
+                }
+                checkboxes.push(checkbox);
+            });
+        }
+
+        this.setState(state => ({...state, 
+            checkboxes: checkboxes 
         }));
     }
 
@@ -86,8 +111,6 @@ export default class FavoriteList extends React.Component {
     checklistChange = (e) => {
         // console.log("======= checklistChange: ", e);
     }
-
-    
     
     
     render() {
@@ -100,7 +123,7 @@ export default class FavoriteList extends React.Component {
                     <HeaderMenu name={"My favorites"}/>
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
-                        <Checklist isFavorite={'true'}  props={this.state.checkboxes} hintMessage={'Create new item'}/>
+                        <Checklist isFavorite={'true'} props={this.state.checkboxes} hintMessage={'Create new item'}/>
                         <InputForm orange={'true'} onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
                     </div>
                     

@@ -15,6 +15,9 @@ import ButtonFavoriteSVG from '../../atoms/buttonSVG/buttonFavorite.svg'
 import ButtonFavoriteEnabledSVG from '../../atoms/buttonSVG/buttonFavoriteEnabled.svg'
 import ButtonDeleteSVG from '../../atoms/buttonSVG/buttonDelete.svg'
 
+import fetchModule from '../../../tools/fetch';
+
+import {getCookie, setCookie} from '../../../tools/auth'
 
 
 export default class CheckboxItem extends React.Component {
@@ -107,10 +110,21 @@ export default class CheckboxItem extends React.Component {
             if (checkboxBox !== null) {checkboxBox.remove();}
             clearTimeout(this.state.timerID);
             clearTimeout(this.state.timerIDSlider);
+            // if it is not list 
+            // if checkboxDeleting => delete method
+            // if not checkboxDeleting => patch check 
+            if (this.state.checkboxDeleting){
+                this.deleteItem(id);
+            } else {
+                this.checkItem(id);
+            }
+            // delete item request here
+            // fetchModule
         }
     }
 
-    startOpenListTimer = () => {
+    startOpenListTimer = (list_id) => {
+        setCookie('current_list_id', list_id);
         window.open('/', '_self');
     }
 
@@ -265,22 +279,125 @@ export default class CheckboxItem extends React.Component {
 
     favoriteButtonOnClick = (e) => {
         console.log("Favorite button clicked");
+        console.log(this.state.checkboxFavorite);
+        console.log(this.state.checkbox)
         let favoriteButton = document.getElementById('checkboxFavoriteButton_'+this.state.checkbox.id);
-        
-        if (!this.state.checkboxFavorite){
+        // this.props.favMethod(this.state.checkbox.id)
+        if (this.state.checkboxFavorite){
+            console.log("disabling fav");
+            // fav delete request
+            this.unfaveItem(this.state.checkbox.id);
+            favoriteButton.className = "favorite-button";
+            favoriteButton.svg = ButtonFavoriteSVG;
+            this.svgSwitch(ButtonFavoriteSVG, 'checkboxFavoriteButton_'+this.state.checkbox.id+'SVG');
+            let checkbox = this.state.checkbox;
+            checkbox['favorite'] = false
+            this.setState(state => ({...state, 
+                checkboxFavorite: false,
+                checkbox: checkbox,
+            }));
+            console.log("after disable: ", this.state.checkboxFavorite);
+        } else {
+            // fav post request
+            this.faveItem(this.state.checkbox.id);
             favoriteButton.className = "favorite-button-enabled";
             favoriteButton.svg = ButtonFavoriteEnabledSVG;
             this.svgSwitch(ButtonFavoriteEnabledSVG, 'checkboxFavoriteButton_'+this.state.checkbox.id+'SVG');
+            let checkbox = this.state.checkbox;
+            checkbox['favorite'] = true
             this.setState(state => ({...state, 
                 checkboxFavorite: true,
+                checkbox: checkbox,
             }));
-        } else {
-            this.svgSwitch(ButtonFavoriteSVG, 'checkboxFavoriteButton_'+this.state.checkbox.id+'SVG');
-            favoriteButton.className = "favorite-button";
-            favoriteButton.svg = ButtonFavoriteSVG;
-            this.setState(state => ({...state, 
-                checkboxFavorite: false,
-            }));
+        }
+    }
+
+
+    faveItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doPost({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id+'/fave'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    unfaveItem = async (fave_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/favorites/'+fave_id+'/fave'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    checkItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const item_data = {
+                'name': this.state.checkbox.name,
+                'check': true
+            }
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id, body: item_data});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
         }
     }
     

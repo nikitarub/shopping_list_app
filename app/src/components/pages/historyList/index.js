@@ -10,6 +10,8 @@ import Input from '../../atoms/input'
 import HeaderMenu from '../../molecules/headerMenu'
 import BottomNav from '../../atoms/bottomNav'
 
+import {getCookie, setCookie, checkAuth} from '../../../tools/auth'
+import fetchModule from '../../../tools/fetch';
 
 export default class HistoryList extends React.Component {
     constructor() {
@@ -26,50 +28,142 @@ export default class HistoryList extends React.Component {
         this.setCheckboxes()
     }
 
-    setCheckboxes = () => {
+    getFavoriteData = async () => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
         
-        this.setState(state => ({...state, checkboxes_favorite: 
-        [
-            {
-                "id":2,
-                "name": "potato",
-                "favorite": true,
-                "useReturnCheckbox": true,
-
-
-            },
-            {
-                "id":3,
-                "name": "apples",
-                "favorite": true,
-                "useReturnCheckbox": true,
-            },
-            {
-                "id":1,
-                "name": "milk",
-                "favorite": true,
-                "useReturnCheckbox": true,
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ")
+            const response = await fetchModule.doGet({path: '/users/'+user_id+'/favourites'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
             }
-        ], 
-            checkboxes_history: [
-                {
-                    "id":4,
-                    "name": "water",
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+    getHistoryData = async () => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ")
+            const response = await fetchModule.doGet({path: '/users/'+user_id+'/history'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                console.error(response.status); 
+                return {}
+            }
+        } catch (error) {
+            console.error(error); 
+            return {}
+        }
+    }
+
+    setCheckboxes = async () => {
+        // get items from list here
+
+        let list_data = await this.getFavoriteData();
+
+        let checkboxes_favorite = [];
+        
+        if (Object.keys(list_data).length !== 0){
+            list_data['items'].forEach(element => {
+                let checkbox = {
+                    'item_id': element.fave_id,
+                    'id': element.fave_id,
+                    'name': element.name,
                     "useReturnCheckbox": true,
-                },
-                {
-                    "id":5,
-                    "name": "sushi",
-                    "useReturnCheckbox": true,
-                },
-                {
-                    "id":6,
-                    "name": "bread",
+                    'favorite' : true
+                }
+                checkboxes_favorite.push(checkbox);
+            });
+        }
+
+        list_data = await this.getHistoryData();
+
+        let checkboxes_history = [];
+
+        console.log("list_data: ", list_data);
+
+        if (Object.keys(list_data).length !== 0){
+            list_data['items'].forEach(element => {
+                let checkbox = {
+                    'item_id': element.fave_id,
+                    'id': element.fave_id,
+                    'name': element.name,
                     "useReturnCheckbox": true,
                 }
-            ]
+                if (element.fave_id != null){
+                    checkbox['favorite'] = true
+                }
+                checkboxes_history.push(checkbox);
+            });
+        }
+
+        this.setState(state => ({...state, 
+            checkboxes_favorite: checkboxes_favorite,
+            checkboxes_history: checkboxes_history
         }));
     }
+
+    // setCheckboxes = () => {
+        
+    //     this.setState(state => ({...state, checkboxes_favorite: 
+    //     [
+    //         {
+    //             "id":2,
+    //             "name": "potato",
+    //             "favorite": true,
+    //             "useReturnCheckbox": true,
+
+
+    //         },
+    //         {
+    //             "id":3,
+    //             "name": "apples",
+    //             "favorite": true,
+    //             "useReturnCheckbox": true,
+    //         },
+    //         {
+    //             "id":1,
+    //             "name": "milk",
+    //             "favorite": true,
+    //             "useReturnCheckbox": true,
+    //         }
+    //     ], 
+    //         checkboxes_history: [
+    //             {
+    //                 "id":4,
+    //                 "name": "water",
+    //                 "useReturnCheckbox": true,
+    //             },
+    //             {
+    //                 "id":5,
+    //                 "name": "sushi",
+    //                 "useReturnCheckbox": true,
+    //             },
+    //             {
+    //                 "id":6,
+    //                 "name": "bread",
+    //                 "useReturnCheckbox": true,
+    //             }
+    //         ]
+    //     }));
+    // }
 
     buttonOnClick = (e) => {
         console.log("EDIT BUTTON CLICKED");

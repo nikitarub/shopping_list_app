@@ -25,7 +25,8 @@ export default class HeaderMenu extends React.Component {
         this.state = {
             name: null,
             has_history: false,
-            isHome: this.props.isHome
+            isHome: this.props.isHome,
+            isStart: this.props.isStart
         }
 
     }
@@ -42,6 +43,9 @@ export default class HeaderMenu extends React.Component {
 
         if (this.props.isHome){
             this.setState({isHome : true});
+        }
+        if (this.props.isStart){
+            this.setState({isStart : true});
         }
         console.log("isHome_2: ", this.props.isHome == true);
     }
@@ -146,7 +150,7 @@ export default class HeaderMenu extends React.Component {
                             </div>
                             <div className={"header-menu"}>
                                 {
-                                    (this.state.has_history == true) && (this.state.isHome != true)
+                                    (this.state.has_history == true) && (this.state.isHome != true) && (this.state.isStart != true)
                                     ?
                                     <div className={'back-button'} onClick={this.goBackwards}>
                                         <ButtonSVG props={{'id': 'back_button'}} svg={buttonBackSVG} ></ButtonSVG>
@@ -156,7 +160,7 @@ export default class HeaderMenu extends React.Component {
                                     <></>
                                 }
                                 {
-                                    (this.state.isHome == true)
+                                    (this.state.isHome == true) && (this.state.isStart != true)
                                     ?
                                     <div className={'back-button'} onClick={this.navigateToLists}>
                                         <ButtonSVG props={{'id': 'back_list_of_list'}} svg={buttonListOfListSVG} ></ButtonSVG>

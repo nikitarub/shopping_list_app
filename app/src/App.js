@@ -14,7 +14,7 @@ import FavoriteList from './components/pages/favoriteList'
 import HistoryList from './components/pages/historyList'
 import ListOfList from './components/pages/listOfList'
 import Share from './components/pages/share'
-
+import Start from './components/pages/startScreen'
 
 export default function App() {
   return (
@@ -33,6 +33,9 @@ export default function App() {
             </Route>
             <Route path="/favorites">
               <FavoriteList />
+            </Route>
+            <Route path="/start">
+              <Start />
             </Route>
             <Route path="/">
               <CurrentList />
