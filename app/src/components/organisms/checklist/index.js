@@ -52,10 +52,16 @@ export default class Checklist extends React.Component {
             name: 'addnew'
         }
         let loading_message = <div className="no-items">
-            <img src={Trolley}/>
-            <h2>No items on the list</h2>
-            <ButtonSVG props={button} svg={ButtonAddNew} onClick={this.on}/>
+            {this.state.hintMessage}
         </div>
+        if (window.location.pathname == "/"){
+            loading_message = <div className="no-items">
+                <img src={Trolley}/>
+                <h2>No items on the list</h2>
+                <ButtonSVG props={button} svg={ButtonAddNew} onClick={this.on}/>
+            </div>
+        }
+        
         
         if (checkboxes === null) {
             checkboxes = []
