@@ -34,6 +34,7 @@ export default class CurrentList extends React.Component {
         const current_list_id = getCookie("current_list_id");
         const user_id = getCookie("userID");
         
+        console.log("userID: ", user_id);
         console.log("current_list_id: ", current_list_id);
         // fetch
         try {

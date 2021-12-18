@@ -96,12 +96,14 @@ export default class ListOfList extends React.Component {
 
     }
 
-    buttonOnClick = (e) => {
+    buttonOnClick = async (e) => {
         console.log("EDIT BUTTON CLICKED");
         let checkboxes = this.state.checkboxes;
+        const item_data = await this.postNewList(this.state.inputText);
         checkboxes.push({
-            "id": Math.random(),
-            "name": this.state.inputText,
+            "id": item_data['list_id'],
+            'list_id': item_data['list_id'],
+            "name": item_data['name'],
             "noFavoriteButton" : true,
         })
         this.setState(state => ({...state, checkboxes: checkboxes}));
