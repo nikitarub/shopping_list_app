@@ -121,11 +121,17 @@ export default class CheckboxItem extends React.Component {
             }
 
             if (this.state.checkboxDeleting){
+                console.log("DROP: Deleting");
                 this.deleteItem(id);
+                this.setState(state => ({...state, 
+                    checkboxChecked: false,
+                    checkboxDeleting: false
+                }));
             } else if (this.state.isFavorite){
                 // if item is only favorite –> delete from favorites
                 this.deleteFavoriteItem(id);
             } else {
+                console.log("DROP: Checking");
                 this.checkItem(id);
             }
 
@@ -462,7 +468,7 @@ export default class CheckboxItem extends React.Component {
                 'name': this.state.checkbox.name,
                 'check': true
             }
-            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id, body: item_data});
+            const response = await fetchModule.doPatch({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id, body: item_data});
             if ((response.status >= 200) && (response.status < 400)) {
                 let json = await response.json();
                 console.log("list: ", json);
