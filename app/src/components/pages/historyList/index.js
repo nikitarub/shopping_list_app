@@ -10,6 +10,11 @@ import Input from '../../atoms/input'
 import HeaderMenu from '../../molecules/headerMenu'
 import BottomNav from '../../atoms/bottomNav'
 
+import ButtonSVG from '../../atoms/buttonSVG'
+import ButtonFavoriteHeader from '../../atoms/buttonSVG/buttonFavoriteHeader.svg'
+import ButtonHistoryHeader from '../../atoms/buttonSVG/buttonHistoryHeader.svg'
+
+
 import {getCookie, setCookie, checkAuth} from '../../../tools/auth'
 import fetchModule from '../../../tools/fetch';
 
@@ -249,8 +254,8 @@ export default class HistoryList extends React.Component {
                     <HeaderMenu name={"History"}/>
                     <div className={"list"}>
                         <div>
-                            <p>Favorite</p>
-                            <hr/>
+                            <br></br>
+                            <ButtonSVG props={button_data} svg={ButtonFavoriteHeader}/>
                             <div onClick={this.checklistChange}>
                                 <Checklist favouriteChoose={this.favouriteChoose} isFavorite={'true'} useReturnCheckbox={true} props={this.state.checkboxes_favorite} hintMessage={'There are no bought items on your favorites list yet. '}/>
                             </div>
@@ -258,8 +263,9 @@ export default class HistoryList extends React.Component {
                         
 
                         <div>
-                            <p>History</p>
-                            <hr/>
+                            <br></br>
+                            <ButtonSVG props={button_data} svg={ButtonHistoryHeader}/>
+                            
                             <div onClick={this.checklistChange}>
                                 <Checklist props={this.state.checkboxes_history} hintMessage={'There are no already purchased items'}/>
                             </div>
