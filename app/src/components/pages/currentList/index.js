@@ -82,24 +82,31 @@ export default class CurrentList extends React.Component {
         let list_data = await this.getListData();
 
         let checkboxes = [];
+        let ids = [];
 
         if (Object.keys(list_data).length !== 0){
             this.state.listName = list_data['name']
             list_data['items'].forEach(element => {
                 if (element['check'] !== true) {
-                    let checkbox = {
-                        'item_id': element.item_id,
-                        'id': element.item_id,
-                        'name': element.name,
+                    if (!ids.includes(element.item_id)){
+                        let checkbox = {
+                            'item_id': element.item_id,
+                            'id': element.item_id,
+                            'name': element.name,
+                        }
+                        if (element.fave_id != null){
+                            checkbox['favorite'] = true
+                        }
+                        checkboxes.push(checkbox);
+                        ids.push(element.item_id);
                     }
-                    if (element.fave_id != null){
-                        checkbox['favorite'] = true
-                    }
-                    checkboxes.push(checkbox);
+                    
                 }
                 
             });
         }
+
+        
 
         this.setState(state => ({...state, 
             checkboxes: checkboxes 
