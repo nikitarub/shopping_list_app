@@ -114,6 +114,12 @@ export default class CheckboxItem extends React.Component {
             // if it is not list 
             // if checkboxDeleting => delete method
             // if not checkboxDeleting => patch check 
+            if (this.state.noFavoriteButton){
+                // удаление списка
+                this.deleteList();
+                return
+            }
+
             if (this.state.checkboxDeleting){
                 this.deleteItem(id);
             } else if (this.state.isFavorite){
@@ -122,6 +128,8 @@ export default class CheckboxItem extends React.Component {
             } else {
                 this.checkItem(id);
             }
+
+            
             // delete item request here
             // fetchModule
         }
@@ -455,6 +463,56 @@ export default class CheckboxItem extends React.Component {
                 'check': true
             }
             const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id, body: item_data});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    getLists = async () => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doGet({path: '/users/'+user_id});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    deleteList = async () => {
+        // тут же проверка, что список не последний
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+
+        let lists = await this.getLists();
+        console.log("lists: ", lists.lists.length);
+        if (lists.lists.length == 1){
+            alert("You can't remove last list");
+            return {};
+        }
+
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id});
             if ((response.status >= 200) && (response.status < 400)) {
                 let json = await response.json();
                 console.log("list: ", json);

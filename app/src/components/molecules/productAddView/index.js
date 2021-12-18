@@ -10,22 +10,49 @@ export default class ProductAddView extends React.Component {
         super(props);
         console.log("productView", this.props);
         this.state = {
-            inputText: 'Product name...'
+            inputText: 'Product name...',
+            title: 'New product'
+        }
+    }
+
+    componentDidMount = () => {
+        console.log("this.props.isListForm: ", this.props.isListForm);
+        if (this.props.isListForm){
+            this.setState({
+                inputText: 'List name...',
+                title: "New list"
+            })
+        } else {
+            this.setState({
+                inputText: 'Product name...',
+                title: "New product"
+            })
         }
     }
    
     off = () => {
         document.getElementById("inputFormPlacement").style.display = "none";
+        
     }
 
     inputChange = (e) => {
         const input = document.getElementById('item-list-input');
         if (input.value == ''){
-            this.setState({inputText: 'Product name...'})
+            if (this.props.isListForm){
+                this.setState({
+                    inputText: 'List name...',
+                    title: "New list"
+                })
+            } else {
+                this.setState({
+                    inputText: 'Product name...',
+                    title: "New product"
+                })
+            }
+            
         } else {
             this.setState(state => ({...state, inputText:input.value}));
         }
-        
     }
 
     onCardClick = () => {
@@ -40,11 +67,12 @@ export default class ProductAddView extends React.Component {
     
     render() {
         return (
+            // isListForm={this.props.isListForm}
             <>
                 <div id="inputFormPlacement">
                     <div className={"close-overlay-area"} onClick={this.off}></div>
                     <div id="text">
-                        <ItemInputCard onCardClick={this.onCardClick} text={this.state.inputText}></ItemInputCard>
+                        <ItemInputCard onCardClick={this.onCardClick} text={this.state.inputText} title={this.state.title}></ItemInputCard>
                     </div>
                     <Input id={"item-list-input"} onChange={this.inputChange}/>
                 </div>

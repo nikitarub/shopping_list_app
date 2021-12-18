@@ -43,7 +43,7 @@ export default class InputForm extends React.Component {
         }
         return (
             <>
-                <ProductAddView onAddClick={this.props.onAddClick}></ProductAddView>
+                <ProductAddView isListForm={this.props.isListForm} onAddClick={this.props.onAddClick}></ProductAddView>
                 <div className={"button-floating"}>
                     <ButtonSVG props={{'id': 'add_button'}} svg={add_button} onClick={this.onAddButtonOpenClick} ></ButtonSVG>
                 </div>

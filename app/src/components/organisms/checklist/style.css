@@ -2,3 +2,8 @@
     padding-top: 20px;
     justify-content: left;
 }
+
+.no-items {
+    margin: 20px;
+    justify-content: center;
+}

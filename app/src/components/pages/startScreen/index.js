@@ -13,6 +13,10 @@ import {setCookie, checkAuth, auth} from '../../../tools/auth'
 import fetchModule from '../../../tools/fetch';
 
 
+import ButtonSVG from '../../atoms/buttonSVG'
+import ButtonStart from '../../atoms/buttonSVG/buttonStart.svg'
+
+
 export default class Start extends React.Component {
     constructor() {
         super();
@@ -64,7 +68,7 @@ export default class Start extends React.Component {
                         <div>
                         <h2>Hi! Let's go shopping!</h2>
                             <div className={"share-main"}>
-                            <Button props={button_props} onClick={this.createUser}></Button>
+                            <ButtonSVG props={button_props} svg={ButtonStart} onClick={this.createUser}/>
                             </div>
                         </div>
                     </div>

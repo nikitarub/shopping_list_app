@@ -139,7 +139,7 @@ export default class ListOfList extends React.Component {
                     {/* <h2 className={'list-title'}>Current list</h2> */}
                     <div className={"list"} onClick={this.checklistChange}>
                         <Checklist props={this.state.checkboxes} hintMessage={'Create new item'}/>
-                        <InputForm onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
+                        <InputForm isListForm={true} onTextChange={this.inputChange} onAddClick={this.productInputed}></InputForm>
                     </div>
                     
                 </div>            

@@ -14,7 +14,7 @@ export default class ItemInputCard extends React.Component {
         return (
             <>
                 <div className={"item-input-card"} onClick={this.props.onCardClick}>
-                    <h2>New Product</h2>
+                    <h2>{this.props.title}</h2>
                     <p>
                         {this.props.text}
                     </p>

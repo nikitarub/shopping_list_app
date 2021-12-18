@@ -1,12 +1,15 @@
 import * as React from "react"
 // import classnames from 'classnames'
 
-import style from './style.css'
+import './style.css'
 
 
 import CheckboxItem from '../../molecules/checkboxItem'
 
-
+import Trolley from '../../atoms/buttonSVG/trolley.png'
+import ButtonSVG from '../../atoms/buttonSVG'
+import ButtonAddNew from '../../atoms/buttonSVG/buttonAddNew.svg'
+ 
 
 export default class Checklist extends React.Component {
     constructor(props) {
@@ -37,10 +40,22 @@ export default class Checklist extends React.Component {
         }
         console.log(">????? UPD");
     }
+
+    on = () => {
+        document.getElementById("inputFormPlacement").style.display = "block";
+        document.getElementById("item-list-input").focus();
+    }
     
     render() {        
         let checkboxes = this.state.checkboxes;
-        let loading_message = this.state.hintMessage
+        let button = {
+            name: 'addnew'
+        }
+        let loading_message = <div className="no-items">
+            <img src={Trolley}/>
+            <h2>No items on the list</h2>
+            <ButtonSVG props={button} svg={ButtonAddNew} onClick={this.on}/>
+        </div>
         
         if (checkboxes === null) {
             checkboxes = []
@@ -56,7 +71,7 @@ export default class Checklist extends React.Component {
                         <CheckboxItem favouriteChoose={this.props.favouriteChoose} isFavorite={this.props.isFavorite} key={'checkbox_key_'+chbox.id} props={chbox}/>
                     )
                         :
-                    <p>{loading_message}</p>
+                    loading_message
                     }
                 </div>            
             </>

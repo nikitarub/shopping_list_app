@@ -57,6 +57,61 @@ export default class FavoriteList extends React.Component {
         }
     }
 
+    deleteItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doDelete({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                throw response.status; 
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    faveItem = async (item_id) => {
+        const current_list_id = getCookie("current_list_id");
+        const user_id = getCookie("userID");
+        
+        console.log("current_list_id: ", current_list_id);
+        // fetch
+        try {
+            console.log("getting list items ");
+            const response = await fetchModule.doPost({path: '/users/'+user_id+'/lists/'+current_list_id+'/items/'+item_id+'/fave'});
+            if ((response.status >= 200) && (response.status < 400)) {
+                let json = await response.json();
+                console.log("list: ", json);
+                return json;
+            } else {
+                alert("Failed to favourite item, please try again later.")
+                console.error(response.status);
+                return {} 
+            }
+        } catch (error) {
+            alert("Failed to favourite item, please try again later.")
+            console.error(error);
+            return {} 
+        }
+    }
+
+    addFavoriteItem = async (name) => {
+        let res = await this.postNewItem(name);
+        const item_id = res.item_id;
+        console.log("Fav item id: ", item_id);
+        await this.faveItem(item_id);
+        await this.deleteItem(item_id);
+        return res;
+    }
+
     getListData = async () => {
         const current_list_id = getCookie("current_list_id");
         const user_id = getCookie("userID");
@@ -105,12 +160,14 @@ export default class FavoriteList extends React.Component {
         }));
     }
 
-    buttonOnClick = (e) => {
+    buttonOnClick = async (e) => {
         console.log("EDIT BUTTON CLICKED");
         let checkboxes = this.state.checkboxes;
+        const item_data = await this.addFavoriteItem(this.state.inputText);
         checkboxes.push({
-            "id": Math.random(),
-            "name": this.state.inputText
+            "id": item_data['item_id'],
+            'item_id': item_data['item_id'],
+            "name": item_data['name']
         })
         this.setState(state => ({...state, checkboxes: checkboxes}));
         const input = document.getElementById('item-list-input');
